@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, jsonify
 
 from gpt_index import GPTTreeIndex, SimpleDirectoryReader
-
+import uuid
 app = Flask(__name__)
 
 
@@ -15,15 +15,16 @@ def summarize():
 
     # first make a directory data/ with all the articles as text files
 
+    data_dir = f"{uuid.uuid4()}_data"
     # make the directory
-    os.mkdir("data")
+    os.mkdir(data_dir)
 
     # write the articles to the directory
     for i, article in enumerate(articles):
-        with open(f"data/article_{i}.txt", "w") as f:
+        with open(f"{data_dir}/article_{i}.txt", "w") as f:
             f.write("\n".join(article["body"]))
 
-    documents = SimpleDirectoryReader('data').load_data()
+    documents = SimpleDirectoryReader(data_dir).load_data()
     index = GPTTreeIndex(documents)
     index.save_to_disk('index.json')
 
