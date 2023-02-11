@@ -1,0 +1,60 @@
+
+Spatially resolved transcriptomics provides high-throughput sequencing of the transcriptome while retaining the spatial information of the tissue, which has facilitated biological insights in many areas in the past three years (;). 
+Spatial transcriptomics enables the analysis of cells under the background of tissue structure, providing a new perspective of cell status. 
+In theory, analysis approaches designed for single-cell RNA sequencing (scRNA-seq) data can be used in spatial transcriptomics, but new methods are still urgently needed to make full use of location information. 
+The first step of processing scRNA-seq data is dealing with high dimensions, considering the efficiency and accuracy of calculation. 
+In general, pipelines filtering genes with variance of expression is used to reduce data dimensionality, i.e. 
+identifying highly variable genes (HVGs). 
+In spatial transcriptomics, detecting genes with spatial expression patterns or spatially variable (SV) genes is the first and important step in describing complex spatial transcriptomic landscapes. 
+SV genes can be caused by cell type localization or space-dependent cell interactions () and are thus informative for multiple downstream analyses, such as reconstructing tissue structure (). 
+SV genes are also helpful for providing biological insight, as different spatial expression patterns reflect different gene functions.. 
+
+At present, commonly used spatial transcriptome sequencing technology (for example, Visium) contains tens or more cells in a spot. 
+With the development of sequencing technology (for example, stereo-seq ()), it is possible to locate cellular or subcellular transcriptomes (). 
+However, the progress of new technology raises new challenges in that the volume and complexity of data increases. 
+Unfortunately, these challenges have not been well solved by current SV gene detection methods. 
+Covariance-matrix-based () and clustering-based () methods increase computational cost dramatically with the increased number of cells or spots, which limits the usage of these methods in big data. 
+Furthermore, gene expression modeling techniques frequently rely on Gaussian or Poisson distributions, which can result in a high rate of false positive results because not all gene expressions conform to these assumptions.. 
+
+To this end, we developed Spanve (Spatial Neighborhood Variably Expressed Genes), a method for analyzing the dependence of gene expression on spatial location based on a simple but effective statistical test (). 
+Spanve does not directly consider modeling gene expression in a cell to classical distributions but rather the difference between a cell and its spatial neighbors, which is viewed as a kind of sampling. 
+If a gene has a spatial expression pattern, there would be a great difference between space-based sampling and random sampling, which is quantified by Kullback-Leibler divergence (KL divergence). 
+As avoiding the assumption of gene expression distributions, more precise and spatial heterogeneous SV genes can be detected. 
+Furthermore, by considering the relationship of cells or spots, SV genes is able to be awareness of spatial domains, which facilitates the downstream clustering task. 
+Besides, through the implementation of parallel processing and simple but effective algorithm, Spanve has been demonstrated to exhibit exceptional computational performance. 
+Here, we implemented two types of spatial sampling, including k-nearest-neighbor-based (Spanve-k) and Delaunay-network-based (Spanve-d). 
+A spatial imputation method () is also implemented for clustering and a comprehensive benchmarking of the state-of-the-art () is used for evaluation.. 
+
+As location effects may exist, including cell type distribution, local environment and cell interactions, simple distributions may not describe the gene expression, while complex distributions largely increase the number of parameters and fitting time. 
+Without the hypothesis of gene expression distribution, Spanve is able to accurately identify genes with spatial expression patterns. 
+As there is no gold standard for SV genes, we used two spatial autocorrelation metrics, Moran’s I and Geary’s C (), to benchmark the statistical sensitivity of SV identification methods. 
+Forty-six datasets with only HVGs sorted by Li et al. () are used. 
+The results show that Spanve achieves the best score in both metrics () and still identified a moderate number of genes. 
+Moreover, by avoiding modeling gene distribution, Spanve reduces the complexity of the calculation and avoids subjective parameter selection. 
+The K nearest neighbor (KNN) network contains more edges than the Delaunay network and is thus more sensitive to spatial variability but requires more computation. 
+In our simulation with 1000 genes and an increased number of cells, Spanve-d has the highest calculation speed and lowest memory costs. 
+Spanve-k is also low-cost when the number of cells is less than 10000, but not in data containing larger cells as edges in the KNN network grow at a polynomial rate. 
+Spanve is able to deal with spatial transcriptome data with one hundred thousand cells in just more than ten seconds ().. 
+
+Compared with the existing methods, Spanve considers the complicated interaction between cells in the detection of spatial patterns, which is helpful for the next crucial downstream job of recognizing the tissue hierarchy and structure. 
+For benchmarking the relationship of clusters and SV genes, 44 datasets from the 10X-Genomics database are used, which contain clustering labels performed by Space Ranger. 
+The Calinski⍰Harabasz Index (CH index) is used as an indicator to show how well selected genes are related to cell clustering results by dispersions of data between clusters and within clusters. 
+The higher the CH index, the more likely it is that data with SV genes as features will attain the clustering label based on raw data, implying that SV genes are more representative of raw data. 
+As shown in, we compared the CH index of genes identified by different methods and showed the advantage of Spanve in identifying cluster-aware genes.. 
+
+We further implemented a spatial imputation algorithm for clustering on the basis of detected SV genes (). 
+As SV genes reflect the location effects of the expression, it may be possible to capture the relationships between cells by scanning the expression of cell pairs. 
+As previously described, these effects are driven by a variety of complicated factors. 
+Consequently, imputation combining spatial locations and gene expression can better capture cellular characteristics, which may be beneficial for downstream clustering. 
+Based on the established expectation distribution of SV gene expression, we can recognize cell pairs with an unexpected expression variation to construct a network. 
+A strategy of graph convolution with a self-loop is performed to impute the data, which is regarded as an enhancement of location effects. 
+To validate whether imputation is beneficial for clustering, we aggregated spatial imputation data with several typical tissue structure detection methods (;). 
+The results in DLPFC data () () indicate the large improvement of clustering after Spanve imputation, and clearer boundary of tissue layers can be obtained ().. 
+
+In conclusion, we developed a spatially variable gene identification method called Spanve, which provides cluster-aware genes scalably. 
+We anticipated that scalability would become more crucial as spatial transcriptomics data expand in size. 
+Spanve requires the least amount of time and computational cost in large-scale spatial transcriptomics data when compared to current methods. 
+Furthermore, the genes identified by Spanve are more spatially heterogeneous and favorable to further clustering. 
+We also created a spatial imputation method that allows for popular clustering approaches identifying more accurate tissue structures. 
+A Limitation is that it is not able to deal with data from similar tissue slices simultaneously for detecting robust SV genes and making use of prior data. 
+As the volume of spatial transcriptomics data continues to increase, overcoming the current limitations of our approach, the Spanve, has the potential to become even more powerful in the future.. 
