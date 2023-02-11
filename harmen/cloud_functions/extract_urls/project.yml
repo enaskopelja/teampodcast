@@ -1,19 +1,29 @@
 parameters: {}
 environment: {}
 packages:
-    - name: sample
+    - name: slack
       shared: false
-      environment: {}
-      parameters: {}
-      annotations: {}
       functions:
-        - name: hello
+        - name: get_urls
           binary: false
-          main: ""
           runtime: python:default
           web: true
           webSecure: false
-          parameters: {}
-          environment: {}
-          annotations: {}
-          limits: {}
+          environment: 
+            SLACK_TOKEN: "${SLACK_TOKEN}"
+        - name: post_podcast
+          binary: false
+          runtime: python:default
+          web: true
+          webSecure: false
+          environment: 
+            SLACK_TOKEN: "${SLACK_TOKEN}"
+    - name: text
+      shared: false
+      functions:
+        - name: split
+          binary: false
+          runtime: python:default
+          web: true
+          webSecure: false     
+  

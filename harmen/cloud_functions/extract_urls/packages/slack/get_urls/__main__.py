@@ -1,7 +1,9 @@
 import slack_sdk
 import re
 import os
-token = 'xoxb-4785919059330-4786296935682-OL191JGh2OIoUG5dY5uJcep5'
+
+token = os.getenv('SLACK_TOKEN')
+
 channel_id = 'C04P4EWMHKM'
 
 from http import HTTPStatus
