@@ -2,13 +2,16 @@ from http import HTTPStatus
 import os
 from flask import Flask, request, jsonify
 
-from gpt_index import GPTTreeIndex, SimpleDirectoryReader
+from gpt_index import GPTTreeIndex, SimpleDirectoryReader, LLMPredictor
+from langchain import OpenAI
+
 import uuid
 app = Flask(__name__)
 
 
 @app.route('/openai/summarize', methods = ['POST'])
 def summarize():
+    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0.3, model_name="text-davinci-003"))
     content = request.json
     articles = content["articles"] # list of articles
     prompts = content["prompts"] # list of prompts
@@ -25,7 +28,7 @@ def summarize():
             f.write("\n".join(article["body"]))
 
     documents = SimpleDirectoryReader(data_dir).load_data()
-    index = GPTTreeIndex(documents)
+    index = GPTTreeIndex(documents, llm_predictor=llm_predictor)
     index.save_to_disk('index.json')
 
     responses = []

@@ -1,16 +1,16 @@
 parameters: {}
 environment: {}
 packages:
-    - name: openai
+    - name: transistor
       shared: false
       functions:
-        - name: summarize
+        - name: publish_episode
           binary: false
           runtime: python:default
           web: true
           webSecure: false
           environment: 
-            OPENAI_API_KEY: "${OPENAI_API_KEY}"
+            TRANSISTOR_FM_TOKEN: "${TRANSISTOR_FM_TOKEN}"
     - name: slack
       shared: false
       functions:
