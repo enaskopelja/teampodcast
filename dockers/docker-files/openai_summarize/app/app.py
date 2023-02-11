@@ -21,7 +21,7 @@ def summarize():
     # write the articles to the directory
     for i, article in enumerate(articles):
         with open(f"data/article_{i}.txt", "w") as f:
-            f.write(article["body"])
+            f.write("\n".join(article["body"]))
 
     documents = SimpleDirectoryReader('data').load_data()
     index = GPTTreeIndex(documents)
@@ -31,7 +31,7 @@ def summarize():
     for prompt in prompts:
         responses.append({
             "prompt" : prompt,
-            "response" : index.query(prompt)
+            "response" : index.query(prompt).response
         })
 
 
