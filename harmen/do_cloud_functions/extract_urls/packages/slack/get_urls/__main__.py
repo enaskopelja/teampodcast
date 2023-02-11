@@ -4,7 +4,7 @@ import os
 
 token = os.getenv('SLACK_TOKEN')
 
-channel_id = 'C04P4EWMHKM'
+channel_id = 'C04PJQW1H9P'
 
 from http import HTTPStatus
 
